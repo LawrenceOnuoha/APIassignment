@@ -53,7 +53,7 @@ app.get('/students', localMiddleware, (req, res) => {
 app.get('/students/filter', function (req, res) {
 
     let data = {
-        where: { section: req.query.section }
+        where: { id: req.query.id, section: req.query.section }
     }
 
     Student.findAll(data).then((result) => {
