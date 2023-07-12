@@ -1,5 +1,14 @@
 const express = require("express");
 const app = express();
+const config = require('./config');
+const Sequelize = require('sequelize');
+
+// Test DB connection
+config.authenticate().then(() => {
+    console.log('Database is connected.');
+}).catch((err) => {
+    console.log(err);
+});
 
 app.use(express.urlencoded({ extended: false }));
 
