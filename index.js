@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const config = require('./config');
 const Sequelize = require('sequelize');
+const Student = require('./models/student');
 
 // Test DB connection
 config.authenticate().then(() => {
@@ -39,7 +40,12 @@ app.post('/students', localMiddleware, (req, res) => {
 
 // Get all students
 app.get('/students', localMiddleware, (req, res) => {
-    res.send(students);
+    // res.send(students);
+    Student.findAll().then((result) => {
+        res.send(result);
+    }).catch((err) => {
+        res.send(err);
+    });
 });
 
 // Filtering student records based on ID or Section
