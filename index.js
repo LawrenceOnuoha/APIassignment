@@ -23,13 +23,13 @@ function localMiddleware(req, res, next) {
     next();
 }
 
-// Data
-let students = [
-    { id: 101, name: 'Student1 Aus', section: 'Computer Science', gpa: '3.72', nationality: 'Australian' },
-    { id: 102, name: 'Student2 Braz', section: 'Music', gpa: '3.95', nationality: 'Brazilian' },
-    { id: 103, name: 'Student3 Ice', section: 'History', gpa: '2.84', nationality: 'Icelander' },
-    { id: 104, name: 'Student4 Ken', section: 'Web Development', gpa: '3.68', nationality: 'Kenyan' }
-]
+// // Data
+// let students = [
+//     { id: 101, name: 'Student1 Aus', section: 'Computer Science', gpa: '3.72', nationality: 'Australian' },
+//     { id: 102, name: 'Student2 Braz', section: 'Music', gpa: '3.95', nationality: 'Brazilian' },
+//     { id: 103, name: 'Student3 Ice', section: 'History', gpa: '2.84', nationality: 'Icelander' },
+//     { id: 104, name: 'Student4 Ken', section: 'Web Development', gpa: '3.68', nationality: 'Kenyan' }
+// ]
 
 // Create a new student
 app.post('/students', localMiddleware, (req, res) => {
@@ -44,34 +44,23 @@ app.get('/students', localMiddleware, (req, res) => {
     Student.findAll().then((result) => {
         res.send(result);
     }).catch((err) => {
-        res.send(err);
+        res.status(500), send(err);
     });
 });
 
 // Filtering student records based on ID or Section
 
 app.get('/students/filter', function (req, res) {
-    if (req.query.id !== undefined) {
-        let studId = parseInt(req.query.id); //parseInt converts a string to integer.
 
-        // Filtering out students that correspond to specific id.
-        let result = students.filter((item) => {
-            return item.id == studId;
-        });
-
-        res.send(result);
+    let data = {
+        where: { section: req.query.section }
     }
 
-    if (req.query.section !== undefined) {
-        let section = req.query.section;
-
-        // Filtering out students based on section.
-        let result = students.filter((item) => {
-            return item.section == section;
-        });
-
-        res.send(result);
-    }
+    Student.findAll(data).then((result) => {
+        res.status(200).send(result);
+    }).catch((err) => {
+        res.status(500), send(err);
+    });
 
 });
 
