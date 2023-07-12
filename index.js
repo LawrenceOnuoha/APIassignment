@@ -58,7 +58,6 @@ app.get('/students/filter', function (req, res) {
         res.send(result);
     }
 
-
 });
 
 // Full student record update
