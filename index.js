@@ -113,19 +113,29 @@ app.patch('/students/:id', function (req, res) {
     });
 });
 
+//Delete a student record
 app.delete('/students/:id', function (req, res){
-    // parseint function converts a string value to integer.
-    let studentId = parseInt(req.params.id);
+    // parseint function converts a string value to integer/number.
+    let studentId = parseInt(req.params.id); //ParseInt value converts strings to numbers
 
-    // Get student array index
-    let index = students.findIndex((s) => {
-        return s.id === studentId;
+    // Get student using ID;
+    Student.findByPk(studentId).then((result) => {
+        if(result){
+            //Delete student
+            result.destroy().then(() => {
+                res.status(200).send(result);
+            })
+            .catch((err) => {
+                res.status(500).send(err);
+            });
+        }else{
+            //Student not found
+            res.status(404).send('Student not found')
+        }
+    })
+    .catch((err) => {
+        res.status(500).send(err);
     });
-
-    // Delete student record
-    students.splice(index, 1);
-
-    res.send('Deletion Successful');
 });
 
 // Web server
