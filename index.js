@@ -86,19 +86,31 @@ app.put('/students/:id', function (req, res) {
     res.send(newStudentData);
 });
 
-// Update student's Section
+// Update student's record
 app.patch('/students/:id', function (req, res) {
-    let studentId = parseInt(req.params.id);
+    let studentId = parseInt(req.params.id); //ParseInt value converts strings to numbers
 
-    // Get student array index;
-    let index = students.findIndex((s) => {
-        return s.id == studentId;
+    // Get student using ID;
+    Student.findByPk(studentId).then((result) => {
+        if(result){
+            //Update student
+            result.nationality = req.body.nationality;
+
+            //Save update
+            result.save().then(() => {
+                res.status(200).send(result);
+            })
+            .catch((err) => {
+                res.status(500).send(err);
+            });
+        }else{
+            //Student not found
+            res.status(404).send('Student not found')
+        }
+    })
+    .catch((err) => {
+        res.status(500).send(err);
     });
-
-    students[index].section = req.body.section; //Update Section
-
-    res.send(students[index]);
-
 });
 
 app.delete('/students/:id', function (req, res){
