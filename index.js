@@ -4,25 +4,41 @@ const config = require('./config');
 const Sequelize = require('sequelize');
 const Student = require('./models/student');
 
+app.use(express.urlencoded({ extended: false })); //Global Middleware
+app.use(globalMiddleware);
+
+//Custom Middleware to track executions
+let thePOST = 0;
+let theGET = 0;
+let thePATCH = 0;
+let theDELETE = 0;
+
+function globalMiddleware(req, res, next) {
+    if (req.method === "POST") {
+        thePOST +=1;
+        console.log(`Post Method used ${thePOST} time(s).`)
+    }else if (req.method === "GET") {
+        theGET =+ 1;
+        console.log(`GET Method used ${theGET} time(s).`)
+    }else if (req.method === "PATCH") {
+        thePATCH =+ 1;
+        console.log(`PATCH Method used ${thePATCH} time(s).`)
+    }else if (req.method === "DELETE") {
+        theDELETE =+ 1;
+        console.log(`DELETE Method used ${theDELETE} time(s).`)
+    }else {
+        console.log('Not a valid method');
+    }
+
+    next();
+}
+
 // Test DB connection
 config.authenticate().then(() => {
     console.log('Database is connected.');
 }).catch((err) => {
     console.log(err);
 });
-
-app.use(express.urlencoded({ extended: false })); //Global Middleware
-app.use(express.json());
-
-let count = 0;
-
-function localMiddleware(req, res, next) {
-    count += 1;
-
-    console.log(count);
-
-    next();
-}
 
 
 // Create a new student
