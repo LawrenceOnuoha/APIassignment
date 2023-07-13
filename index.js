@@ -11,7 +11,8 @@ config.authenticate().then(() => {
     console.log(err);
 });
 
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false })); //Global Middleware
+app.use(express.json());
 
 let count = 0;
 
@@ -23,23 +24,20 @@ function localMiddleware(req, res, next) {
     next();
 }
 
-// // Data
-// let students = [
-//     { id: 101, name: 'Student1 Aus', section: 'Computer Science', gpa: '3.72', nationality: 'Australian' },
-//     { id: 102, name: 'Student2 Braz', section: 'Music', gpa: '3.95', nationality: 'Brazilian' },
-//     { id: 103, name: 'Student3 Ice', section: 'History', gpa: '2.84', nationality: 'Icelander' },
-//     { id: 104, name: 'Student4 Ken', section: 'Web Development', gpa: '3.68', nationality: 'Kenyan' }
-// ]
 
 // Create a new student
-app.post('/students', localMiddleware, (req, res) => {
-    let newStudent = req.body;
-    students.push(newStudent);
-    res.send(newStudent);
+app.post('/students', function (req, res){
+    let studentData = req.body;
+
+    Student.create(studentData).then((result)  => {
+        res.status(200).send(result);   
+    }).catch((err) => {
+        res.status(500).send(err);
+    });
 });
 
 // Get all students
-app.get('/students', localMiddleware, (req, res) => {
+app.get('/students', function (req, res){
     // res.send(students);
     Student.findAll().then((result) => {
         res.send(result);
@@ -49,11 +47,18 @@ app.get('/students', localMiddleware, (req, res) => {
 });
 
 // Filtering student records based on ID or Section
-
 app.get('/students/filter', function (req, res) {
 
     let data = {
-        where: { id: req.query.id, section: req.query.section }
+        where: {}
+    };
+
+    if(req.query.section !== undefined){
+        data.where.section = req.query.section;
+    }
+
+    if(req.query.id !== undefined){
+        data.where.id = req.query.id;
     }
 
     Student.findAll(data).then((result) => {
@@ -66,7 +71,7 @@ app.get('/students/filter', function (req, res) {
 
 // Full student record update
 // Retrieve student ID as a param.
-app.put('/students/:id', localMiddleware, function (req, res) {
+app.put('/students/:id', function (req, res) {
     let studentId = parseInt(req.params.id);
 
     // Get student array index;
@@ -82,7 +87,7 @@ app.put('/students/:id', localMiddleware, function (req, res) {
 });
 
 // Update student's Section
-app.patch('/students/:id', localMiddleware, function (req, res) {
+app.patch('/students/:id', function (req, res) {
     let studentId = parseInt(req.params.id);
 
     // Get student array index;
@@ -96,7 +101,7 @@ app.patch('/students/:id', localMiddleware, function (req, res) {
 
 });
 
-app.delete('/students/:id', localMiddleware, (req, res) => {
+app.delete('/students/:id', function (req, res){
     // parseint function converts a string value to integer.
     let studentId = parseInt(req.params.id);
 
