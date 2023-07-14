@@ -6,11 +6,11 @@ const Student = require('./models/student');
 const Section = require('./models/section');
 
 Student.belongsTo(Section, {
-    foreignKey: 'dept_id'
+    foreignKey: 'sect_id'
 });
 
 Section.hasMany(Student, {
-    foreignKey: 'dept_id'
+    foreignKey: 'sect_id'
 });
 
 app.use(express.urlencoded({ extended: false })); //Global Middleware
@@ -67,11 +67,10 @@ app.get('/students', function (req, res){
         include: [Section]
     } 
 
-    // res.send(students);
-    Student.findAll(data).then((result) => {
-        res.send(result);
+    Student.findAll(data).then((results) => {
+        res.status(200).send(results);
     }).catch((err) => {
-        res.status(500), send(err);
+        res.status(500).send(err);
     });
 });
 
