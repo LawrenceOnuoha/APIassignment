@@ -12,8 +12,8 @@ const Student = config.define('student', {
         type: Sequelize.STRING,
         allowNull: false
     },
-    section: {
-        type: Sequelize.STRING,
+    sect_id: {
+        type: Sequelize.INTEGER,
         allowNull: false
     },
     gpa: {

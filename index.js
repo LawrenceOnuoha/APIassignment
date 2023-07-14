@@ -3,6 +3,15 @@ const app = express();
 const config = require('./config');
 const Sequelize = require('sequelize');
 const Student = require('./models/student');
+const Section = require('./models/section');
+
+Student.belongsTo(Section, {
+    foreignKey: 'dept_id'
+});
+
+Section.hasMany(Student, {
+    foreignKey: 'dept_id'
+});
 
 app.use(express.urlencoded({ extended: false })); //Global Middleware
 app.use(globalMiddleware);
@@ -54,8 +63,12 @@ app.post('/students', function (req, res){
 
 // Get all students
 app.get('/students', function (req, res){
+    let data = {
+        include: [Section]
+    } 
+
     // res.send(students);
-    Student.findAll().then((result) => {
+    Student.findAll(data).then((result) => {
         res.send(result);
     }).catch((err) => {
         res.status(500), send(err);
