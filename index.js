@@ -16,16 +16,16 @@ let theDELETE = 0;
 function globalMiddleware(req, res, next) {
     if (req.method === "POST") {
         thePOST +=1;
-        console.log(`Post Method used ${thePOST} time(s).`)
+        console.log(`Post Method used ${thePOST} - HTTP Method: ${req.method}`)
     }else if (req.method === "GET") {
         theGET =+ 1;
-        console.log(`GET Method used ${theGET} time(s).`)
+        console.log(`GET Method used ${theGET} - HTTP Method: ${req.method}`)
     }else if (req.method === "PATCH") {
         thePATCH =+ 1;
-        console.log(`PATCH Method used ${thePATCH} time(s).`)
+        console.log(`PATCH Method used ${thePATCH} - HTTP Method: ${req.method}`)
     }else if (req.method === "DELETE") {
         theDELETE =+ 1;
-        console.log(`DELETE Method used ${theDELETE} time(s).`)
+        console.log(`DELETE Method used ${theDELETE} - HTTP Method: ${req.method}`)
     }else {
         console.log('Not a valid method');
     }
@@ -155,6 +155,6 @@ app.delete('/students/:id', function (req, res){
 });
 
 // Web server
-app.listen(3000, (req, res) => {
-    console.log('Server running on port 3000...');
+app.listen(4000, (req, res) => {
+    console.log('Server running on port 4000...');
 });
